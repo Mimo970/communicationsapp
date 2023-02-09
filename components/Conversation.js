@@ -5,7 +5,7 @@ import ConversationNavbar from "./ConversationNavbar";
 
 const Conversation = () => {
   return (
-    <div className="col-span-10">
+    <div className="  col-span-10">
       <ConversationNavbar />
       <div className="grid grid-cols-8">
         <Chat />

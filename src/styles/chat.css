@@ -1,0 +1,15 @@
+.owner {
+    /* background-color: blue !important; */
+    flex-direction: row-reverse;
+}
+.owner div{
+    /* background-color: blue !important; */
+    /* flex-direction: row-reverse; */
+    align-items: flex-end;
+}
+
+.owner div div{
+    /* background-color: blue !important; */
+    /* flex-direction: row-reverse; */
+    /* align-items: flex-end; */
+}
