@@ -37,7 +37,7 @@ const ConversationNavbar = (props) => {
               isOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            <div className="">{props.children}</div>
+            {screenSize.width > 475 && <div className="">{props.children}</div>}
           </div>
         </div>
       ) : null}
