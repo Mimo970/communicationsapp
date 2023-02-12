@@ -6,12 +6,24 @@ import DMSLayout from "./DMSLayout";
 const DirectMessages = () => {
   return (
     <>
-      <div className="col-span-2 bg-neutral-800    flex flex-col items-center pt-2">
+      <div className="py-2 xxs:col-span-3 xs:col-span-3 sm:col-span-3 md:col-span-3 lg:col-span-2 bg-neutral-800 flex flex-col items-center ">
         <DMSLayout>
-          <div className="flex flex-col">
-            <span className="py-2">Direct Messages</span>
+          <div className="flex flex-col overflow-y-scroll max-h-[45rem] ">
+            <span className="py-2 text-lg bold">Direct Messages</span>
             <DM />
             <DM />
+            <DM />
+            <DM />
+            {/* <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM />
+            <DM /> */}
           </div>
         </DMSLayout>
       </div>

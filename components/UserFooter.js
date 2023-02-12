@@ -2,7 +2,7 @@ import React from "react";
 import { MdSettings } from "react-icons/md";
 const UserFooter = () => {
   return (
-    <div className="bg-neutral-900 px-2 py-2 w-full flex items-center justify-between">
+    <div className="bg-neutral-900 px-2 py-3 pb-5 w-full flex items-center justify-between z-50">
       <div className="flex items-center">
         <img
           className="rounded-full w-11 h-11 object-center"
@@ -16,7 +16,7 @@ const UserFooter = () => {
         Sign Out
       </button>
 
-      <span class="cursor-pointer">
+      <span className="cursor-pointer">
         <MdSettings />
       </span>
     </div>
