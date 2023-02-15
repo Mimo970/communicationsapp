@@ -3,6 +3,8 @@ import {
   getAuth,
   updateProfile,
 } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
 import React, { useState } from "react";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { auth, storage, db } from "../../firebase";
@@ -15,8 +17,11 @@ import {
   getStorage,
 } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
+import Link from "next/link";
 
 const RegisterPage = () => {
+  const router = useRouter();
+
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -84,7 +89,9 @@ const RegisterPage = () => {
               email,
               photoURL: downloadURL,
             });
+            await setDoc(doc(db, "userChats", response.user.uid), {});
           });
+          router.push("/");
         }
       );
     } catch (error) {
@@ -179,6 +186,15 @@ const RegisterPage = () => {
         >
           Register
         </button>
+
+        <p>
+          Already have an account? &nbsp;
+          <Link href="/login">
+            <span className="underline underline-offset-1 text-sky-600">
+              Sign In
+            </span>
+          </Link>
+        </p>
       </form>
     </div>
   );

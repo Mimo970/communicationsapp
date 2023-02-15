@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { AuthContext } from "contexts/AuthContext";
+import React, { useContext, useState } from "react";
 import { BsPaperclip } from "react-icons/bs";
 import { MdAddPhotoAlternate } from "react-icons/md";
 const Input = () => {
-  const handleSend = (e) => {
-    console.log(e);
-  };
+  const [text, setText] = useState("");
+  const [image, setImage] = useState(null);
+
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(AuthContext);
   return (
     <div className="flex items-center bg-zinc-900 m-3 p-2 rounded-md">
       <input

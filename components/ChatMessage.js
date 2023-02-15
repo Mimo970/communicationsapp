@@ -1,8 +1,12 @@
-import React from "react";
-const ChatMessage = () => {
+import { AuthContext } from "contexts/AuthContext";
+import React, { useContext } from "react";
+const ChatMessage = (props) => {
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(AuthContext);
+
   return (
     <div className="flex items-start">
-      <img
+      {/* <img
         src="https://i.pinimg.com/736x/0c/e4/d7/0ce4d75808fa634815d237ec92c5d538.jpg"
         alt="Avatar"
         className="w-10 h-10 rounded-full mr-3"
@@ -22,7 +26,7 @@ const ChatMessage = () => {
             architecto laboriosam id.
           </p>
         </main>
-      </div>
+      </div> */}
     </div>
   );
 };

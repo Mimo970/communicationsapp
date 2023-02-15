@@ -3,8 +3,22 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import Main from "components/Main";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { AuthContext } from "contexts/AuthContext";
 
 export default function Home() {
+  const { currentUser } = useContext(AuthContext);
+  console.log(currentUser);
+  const router = useRouter();
+
+  const ProtectedRoute = ({ children }) => {
+    if (!currentUser) {
+      router.push("/login");
+      return null;
+    }
+    return children;
+  };
   return (
     <>
       <Head>
@@ -13,9 +27,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className=" ">
-        <Main />
-      </div>
+      <ProtectedRoute>
+        <div className=" ">
+          <Main />
+        </div>
+      </ProtectedRoute>
     </>
   );
 }
