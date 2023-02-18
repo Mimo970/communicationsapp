@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Dm from "./Dm";
 import DMSNavbar from "./DMSNavbar";
 import UserFooter from "./UserFooter";
@@ -37,29 +37,29 @@ const DirectMessages = () => {
         <DMSLayout>
           <div className="flex flex-col overflow-y-scroll max-h-[45rem] ">
             <span className="py-2 text-lg bold">Direct Messages</span>
-            {Object.entries(chats)
-              ?.sort((a, b) => b[1].date - a[1].date)
-              .map((chat) => (
-                <div
-                  className="flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded"
-                  key={chat[0]}
-                  onClick={() => handleSelect(chat[1].userInfo)}
-                >
-                  <img
-                    src={chat[1].userInfo.photoURL}
-                    className="rounded-full
+            {chats &&
+              Object.entries(chats)
+                ?.sort((a, b) => b[1].date - a[1].date)
+                .map((chat) => (
+                  <div
+                    className="flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded"
+                    key={chat[0]}
+                    onClick={() => handleSelect(chat[1].userInfo)}
+                  >
+                    <img
+                      src={chat[1].userInfo.photoURL}
+                      className="rounded-full
                     w-11
                     h-11
                     object-center"
-                  />
-                  <div className="userChatInfo">
-                    <span className="px-2 text-md font-semibold">
-                      {chat[1].userInfo.displayName}
-                    </span>
-                    <p>{chat[1].lastMessage?.text}</p>
+                    />
+                    <div className="userChatInfo">
+                      <span className="px-2 text-md font-semibold">
+                        {chat[1].userInfo.displayName}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
           </div>
         </DMSLayout>
       </div>

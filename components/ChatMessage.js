@@ -1,32 +1,43 @@
 import { AuthContext } from "contexts/AuthContext";
+import { ChatContext } from "contexts/ChatContext";
 import React, { useContext } from "react";
-const ChatMessage = (props) => {
+const ChatMessage = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(AuthContext);
+  const { data } = useContext(ChatContext);
+
+  console.log(message);
 
   return (
-    <div className="flex items-start">
-      {/* <img
-        src="https://i.pinimg.com/736x/0c/e4/d7/0ce4d75808fa634815d237ec92c5d538.jpg"
+    <div
+      className={`flex items-start ${
+        message.senderId === currentUser.uid ? "owner" : null
+      }`}
+    >
+      <img
+        src={
+          message.senderId === currentUser.uid
+            ? currentUser.photoURL
+            : data.user.photoURL
+        }
         alt="Avatar"
         className="w-10 h-10 rounded-full mr-3"
       />
       <div className="flex flex-col w-1/2 rounded p-2 ">
         <div className="flex items-center p-2">
-          <p className="text-lg font-medium text-neutral-100">Luffy</p>
+          <p className="text-lg font-medium text-neutral-100">
+            {message.senderId === currentUser.uid
+              ? currentUser.displayName
+              : data.user.displayName}
+          </p>
           <p className="mx-1 text-zinc-400">10/20/2023</p>
           <p className=" text-zinc-400">11:32 PM</p>
         </div>
         <main className="flex flex-col bg-neutral-800 w-1/2 rounded p-2">
-          <p className="text-lg font-medium text-neutral-100">Luffy</p>
-          <p className="text-md text-white  w-1/2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus
-            sed eum quod cupiditate deserunt. Velit amet minima error soluta
-            placeat modi similique possimus assumenda, qui ratione alias
-            architecto laboriosam id.
-          </p>
+          <p className="text-lg font-medium text-neutral-100"></p>
+          <p className="text-md text-white  w-1/2">{message.text}</p>
+          {message.img && <img src={message.img} alt="" />}
         </main>
-      </div> */}
+      </div>
     </div>
   );
 };

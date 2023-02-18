@@ -40,7 +40,7 @@ const RegisterPage = () => {
         email,
         password
       );
-      const storage = getStorage();
+      // const storage = getStorage();
 
       const storageRef = ref(storage, displayName);
 

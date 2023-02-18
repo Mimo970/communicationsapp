@@ -3,9 +3,16 @@ import { signOut } from "firebase/auth";
 import React, { useContext } from "react";
 import { MdSettings } from "react-icons/md";
 import { AuthContext } from "contexts/AuthContext";
+import { useRouter } from "next/router";
 const UserFooter = () => {
-  const { currentUser } = useContext(AuthContext);
+  const router = useRouter();
 
+  const { currentUser } = useContext(AuthContext);
+  const handleSettings = (e) => {
+    e.preventDefault();
+
+    router.push("/myAccount");
+  };
   return (
     <div className="bg-neutral-900 px-2 py-3 pb-5 w-full flex items-center justify-between z-50">
       <div className="flex items-center">
@@ -24,7 +31,7 @@ const UserFooter = () => {
         Sign Out
       </button>
 
-      <span className="cursor-pointer">
+      <span className="cursor-pointer" onClick={handleSettings}>
         <MdSettings />
       </span>
     </div>
