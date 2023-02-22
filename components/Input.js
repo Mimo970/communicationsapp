@@ -50,7 +50,7 @@ const Input = () => {
         text,
         senderId: currentUser.uid,
         date: Timestamp.now(),
-        // createdAt: Timestamp.fromDate(new Date()),
+        // messageDate: Timestamp.now(),
         img: url || "",
       }),
     });

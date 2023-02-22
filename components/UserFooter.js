@@ -14,7 +14,7 @@ const UserFooter = () => {
     router.push("/myAccount");
   };
   return (
-    <div className="bg-neutral-900 px-2 py-3 pb-5 w-full flex items-center justify-between z-50">
+    <div className=" bg-neutral-900 px-2 py-3 pb-5 w-full flex items-center justify-between z-50">
       <div className="flex items-center">
         <img
           className="rounded-full w-11 h-11 object-center"

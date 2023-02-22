@@ -88,6 +88,8 @@ const RegisterPage = () => {
               displayName,
               email,
               photoURL: downloadURL,
+              aboutMe: "",
+              aboutMeColor: "",
             });
             await setDoc(doc(db, "userChats", response.user.uid), {});
           });

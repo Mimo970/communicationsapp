@@ -9,7 +9,7 @@ import { AuthContext } from "contexts/AuthContext";
 
 export default function Home() {
   const { currentUser } = useContext(AuthContext);
-  console.log(currentUser);
+  // console.log(currentUser);
   const router = useRouter();
 
   const ProtectedRoute = ({ children }) => {

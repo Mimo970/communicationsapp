@@ -22,10 +22,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --primary: #3a3a40;
   --secondary: #262626;
-}
+} */
 
 
 
@@ -93,5 +93,10 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
-  }
+   
+  } 
+    /* input:not([type="radio"]):not([type="checkbox"]) {
+    color-scheme: light;
+  } */
 }
+ 

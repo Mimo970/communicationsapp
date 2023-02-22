@@ -26,28 +26,30 @@ const DirectMessages = () => {
 
     currentUser.uid && getChats();
   }, [currentUser.uid]);
-  console.log(chats);
+  // console.log(chats);
 
   const handleSelect = (u) => {
     dispatch({ type: "CHANGE_USER", payload: u });
   };
+  console.log(chats);
+  // console.log(Object.entries(chats));
   return (
     <>
-      <div className="py-2 xxs:col-span-3 xs:col-span-3 sm:col-span-3 md:col-span-3 lg:col-span-2 bg-neutral-800 flex flex-col items-center ">
+      <div className="primary-darker py-2 xxs:col-span-3 xs:col-span-3 sm:col-span-3 md:col-span-3 lg:col-span-2  flex flex-col items-center ">
         <DMSLayout>
-          <div className="flex flex-col overflow-y-scroll max-h-[45rem] ">
+          <div className="  flex flex-col overflow-y-scroll max-h-[45rem] ">
             <span className="py-2 text-lg bold">Direct Messages</span>
             {chats &&
               Object.entries(chats)
                 ?.sort((a, b) => b[1].date - a[1].date)
                 .map((chat) => (
                   <div
-                    className="flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded"
+                    className="cursor-pointer flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded"
                     key={chat[0]}
-                    onClick={() => handleSelect(chat[1].userInfo)}
+                    onClick={() => handleSelect(chat[1]?.userInfo)}
                   >
                     <img
-                      src={chat[1].userInfo.photoURL}
+                      src={chat[1].userInfo?.photoURL}
                       className="rounded-full
                     w-11
                     h-11
@@ -55,7 +57,7 @@ const DirectMessages = () => {
                     />
                     <div className="userChatInfo">
                       <span className="px-2 text-md font-semibold">
-                        {chat[1].userInfo.displayName}
+                        {chat[1].userInfo?.displayName}
                       </span>
                     </div>
                   </div>

@@ -12,7 +12,7 @@ const Main = () => {
   return (
     <>
       {/* Screen Width: {screenSize.width} */}
-      <div className=" grid grid-cols-12">
+      <div className="h-screen grid grid-cols-12">
         {screenSize.width === 0 || screenSize.width > 475 ? (
           <DirectMessages />
         ) : null}

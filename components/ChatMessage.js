@@ -5,8 +5,9 @@ const ChatMessage = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-  console.log(message);
-
+  // console.log(message);
+  let messageDate = new Date(message.date.seconds * 1000);
+  // console.log(messageDate);
   return (
     <div
       className={`flex items-start ${
@@ -29,8 +30,10 @@ const ChatMessage = ({ message }) => {
               ? currentUser.displayName
               : data.user.displayName}
           </p>
-          <p className="mx-1 text-zinc-400">10/20/2023</p>
-          <p className=" text-zinc-400">11:32 PM</p>
+          <p className="mx-1 text-zinc-400">
+            {new Date(message.date.seconds * 1000).toLocaleString()}
+          </p>
+          {/* <p className=" text-zinc-400">11:32 PM</p> */}
         </div>
         <main className="flex flex-col bg-neutral-800 w-1/2 rounded p-2">
           <p className="text-lg font-medium text-neutral-100"></p>

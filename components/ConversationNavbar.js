@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
 import useScreenSize from "utils/screenSize";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { IoAtOutline } from "react-icons/io5";
 import DirectMessages from "./DirectMessages";
 import Hamburger from "hamburger-react";
 import { ChatContext } from "contexts/ChatContext";
+import Input from "./Input";
 const ConversationNavbar = (props) => {
   const screenSize = useScreenSize();
 
@@ -11,7 +13,7 @@ const ConversationNavbar = (props) => {
   const { data } = useContext(ChatContext);
   return (
     <div
-      className={`bg-zinc-700 border-b p-3.5 ${
+      className={`primary-lighter border-b p-3.5 ${
         screenSize.width > 475 && "p-3.5"
       }  border-b-zinc-800 items-center flex ${
         isOpen === false && "items-center"
@@ -19,17 +21,6 @@ const ConversationNavbar = (props) => {
     >
       {screenSize.width === 0 || screenSize.width < 475 ? (
         <div className="relative">
-          {/* <button
-            className="block lg:hidden focus:outline-none"
-            onClick={() => setOpen(!open)}
-          >
-            <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
-              <path
-                className="heroicon-ui"
-                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
-              />
-            </svg>
-          </button> */}
           {screenSize.width > 475 && (
             <Hamburger size={20} toggled={isOpen} toggle={setOpen} />
           )}
@@ -46,7 +37,25 @@ const ConversationNavbar = (props) => {
         </div>
       ) : null}
 
-      <div className="px-1 text-zinc-300">@ {data.user.displayName}</div>
+      <div className="px-1  text-zinc-300">
+        {data.chatId === "null" ? (
+          <div className="py-3">
+            {/* <input
+              // onKeyDown={handleKey}
+              // onChange={(e) => setUsername(e.target.value)}
+              type="search"
+              name=""
+              id=""
+              className="w-96 text-white"
+              placeholder="Search"
+            /> */}
+          </div>
+        ) : (
+          <div className="flex items-center">
+            <IoAtOutline size={24} /> &nbsp;{data.user.displayName}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

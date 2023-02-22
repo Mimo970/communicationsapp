@@ -7,7 +7,7 @@ import DropdownMenu from "./DropdownMenu";
 
 const Conversation = () => {
   return (
-    <div className="xxs:col-span-12 xs:col-span-9 sm:col-span-9 md:col-span-9 lg:col-span-10">
+    <div className=" xxs:col-span-12 xs:col-span-9 sm:col-span-9 md:col-span-9 lg:col-span-10">
       <div className="flex flex-col">
         <ConversationNavbar>
           <DropdownMenu />

@@ -9,11 +9,12 @@ const DMSLayout = ({ children }) => {
     //   {children}
     //   <UserFooter />
     // </div>
-    <div className="flex flex-col h-screen w-full">
+    // h-[53rem]
+    <div className="h-[53rem] flex flex-col  w-full">
       <div className="  ">
         <DMSNavbar />
       </div>
-      <div className="flex-1 mx-4">
+      <div className="flex-1 mx-4 ">
         <div className="flex flex-col">{children}</div>
       </div>
       <div className=" ">

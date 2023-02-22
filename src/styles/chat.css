@@ -19,11 +19,21 @@
     align-self: center; */
     /* margin : -35px 10px; */
     margin: -3rem 2rem;
-    border: 6px solid #27272a;
+    border: 6px solid #282b30;
  
 }
 
 .burgerbg {
  /* background-color: #36363a; */
  /* border: 4px solid red; */
+}
+.primary-darker {
+    background-color:#282b30
+}
+.primary-lighter {
+    background-color: 	#36393e
+}
+
+.chrome-picker input[type='text'] {
+  color: #d40000;
 }

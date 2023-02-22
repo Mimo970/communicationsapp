@@ -1,27 +1,101 @@
 import { AuthContext } from "contexts/AuthContext";
+import { db, storage, auth } from "../../firebase";
+import {
+  getDocFromCache,
+  doc,
+  updateDoc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
-// import Avatar from "./Avatar"; // A separate Avatar component to display the user's profile image
+import React, { useContext, useEffect, useState } from "react";
 import { ChromePicker } from "react-color";
 import { MdOutlineCancel } from "react-icons/md";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+// import { uuidv4 } from "@firebase/util";
+import { updateProfile } from "firebase/auth";
+import { ChatContext } from "contexts/ChatContext";
 
 const MyAccount = () => {
   const { currentUser } = useContext(AuthContext);
   const router = useRouter();
 
-  const handleSettings = (e) => {
+  const [color, setColor] = useState("#000000");
+  const [aboutMe, setAboutMe] = useState("");
+  const [img, setImg] = useState(null);
+  // const [settingsUser, setSettingsUser] = useState({});
+  const { data } = useContext(ChatContext);
+
+  const handleColorChange = (newColor) => {
+    setColor(newColor.hex);
+  };
+
+  const handleChange = (e) => {
+    setAboutMe(e.target.value);
+    // console.log(aboutMe);
+  };
+
+  const handleSave = async (e) => {
+    // e.preventDefault();
+
+    let url;
+    if (img) {
+      const imgRef = ref(
+        storage,
+        `avatars/${new Date().getTime()} - ${img.name}`
+      );
+      const snap = await uploadBytes(imgRef, img);
+      const dlUrl = await getDownloadURL(ref(storage, snap.ref.fullPath));
+      url = dlUrl;
+    }
+    updateProfile(auth.currentUser, {
+      photoURL: url,
+    })
+      .then(() => {
+        console.log("profile updated!!");
+        // Profile updated!
+        // ...
+      })
+      .catch((error) => {
+        console.log(error);
+        // An error occurred
+        // ...
+      });
+
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      // date: Timestamp.now(),
+
+      aboutMeColor: color,
+      aboutMe: aboutMe,
+    });
+    const docRef = doc(db, "userChats", currentUser.uid);
+
+    await updateDoc(docRef, {
+      userInfo: {
+        aboutMeColor: color,
+        aboutMe: aboutMe,
+      },
+
+      // { merge: true }
+    });
+  };
+
+  const backtoHome = (e) => {
     e.preventDefault();
 
     router.push("/");
   };
-
+  // console.log(color);
   return (
     <div className="pt-5 bg-zinc-700 h-screen ">
       <div className=" flex flex-col max-w-4xl mx-auto bg-zinc-800 p-4 rounded-lg">
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold mb-4">My Account</h1>
-          <span className="cursor-pointer" onClick={handleSettings}>
-            <MdOutlineCancel />
+          <span className="cursor-pointer" onClick={backtoHome}>
+            <div className="flex flex-col items-center">
+              <MdOutlineCancel size={40} />
+              <span>ESC</span>
+            </div>
           </span>
         </div>
 
@@ -34,7 +108,7 @@ const MyAccount = () => {
                 src={currentUser.photoURL}
                 alt=""
               />
-              {/* <Avatar imageSrc="user-profile-image.jpg" /> */}
+
               <div className="mt-4">
                 <h2 className="text-lg font-bold">Username</h2>
                 <p className="text-gray-500">@{currentUser.displayName}</p>
@@ -49,26 +123,46 @@ const MyAccount = () => {
             <h2 className="text-lg font-bold mb-2">Account Settings</h2>
             <div className="border rounded p-4 flex flex-col gap-10">
               <div>
-                <h1></h1>
                 <div className="flex ">
-                  <button className="mx-1 bg-zinc-600 hover:bg-zinc-700 text-white font-bold py-1.5 px-3 rounded">
+                  <input
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={(e) => setImg(e.target.files[0])}
+                    id="file"
+                  />
+                  <label
+                    htmlFor="file"
+                    className="mx-1 bg-zinc-600 hover:bg-zinc-700 text-white font-bold py-1.5 px-3 rounded"
+                  >
                     Change Avatar
-                  </button>
+                  </label>
+
                   <button className="mx-1 bg-zinc-600 hover:bg-zinc-700 text-white font-bold py-1.5 px-3 rounded">
                     Remove Avatar
                   </button>
                 </div>
               </div>
               <div>
-                <ChromePicker disableAlpha />
+                <ChromePicker
+                  // className="chrome-picker"
+                  // size={12}
+                  // white="#fff"
+                  // grey="#333"
+                  // styles={{ default: { picker: { color: "#D71818" } } }}
+                  color={color}
+                  onChange={handleColorChange}
+                  disableAlpha
+                />
               </div>
               <div>
                 <h1>About Me</h1>
                 <div>
                   <textarea
                     className="rounded"
-                    name=""
-                    id=""
+                    name="aboutMe"
+                    id="aboutMe"
+                    value={aboutMe}
+                    onChange={handleChange}
                     cols="40"
                     rows="8"
                   ></textarea>
@@ -77,7 +171,10 @@ const MyAccount = () => {
             </div>
           </div>
         </div>
-        <button className="self-end mt-3 bg-zinc-600 hover:bg-zinc-700 text-white font-bold py-1.5 px-3 rounded">
+        <button
+          onClick={handleSave}
+          className="self-end mt-3 bg-zinc-600 hover:bg-zinc-700 text-white font-bold py-1.5 px-3 rounded"
+        >
           Save Changes
         </button>
       </div>

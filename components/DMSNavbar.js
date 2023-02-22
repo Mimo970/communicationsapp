@@ -39,7 +39,7 @@ const DMSNavbar = () => {
       querySnapshot.forEach((doc) => {
         setUser(doc.data());
         console.log(doc.id, " => ", doc.data());
-        console.log(doc.data());
+        console.log(user);
       });
       console.log(querySnapshot.empty);
       console.log(user);
@@ -47,6 +47,8 @@ const DMSNavbar = () => {
       console.log(err);
       setError(true);
     }
+    // setUser(null);
+    setUsername("");
   };
   const handleKey = (e) => {
     e.code === "Enter" && handleSearch();
@@ -76,6 +78,8 @@ const DMSNavbar = () => {
             uid: user.uid,
             displayName: user.displayName,
             photoURL: user.photoURL,
+            aboutMe: user.aboutMe,
+            aboutMeColor: user.aboutMeColor,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
@@ -85,6 +89,8 @@ const DMSNavbar = () => {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL,
+            aboutMe: currentUser.aboutMe,
+            aboutMeColor: currentUser.aboutMeColor,
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
@@ -118,21 +124,26 @@ const DMSNavbar = () => {
                     type="search"
                     name=""
                     id=""
-                    className="w-96 p-2 text-white"
+                    className="bg-zinc-500 w-96 p-2 text-white"
                     placeholder="Find or start a conversation "
                   />
                 </div>
-                <button onClick={handleClick}>Search</button>
+                <button
+                  className="bg-zinc-600 hover:bg-zinc-800 text-white font-bold py-1.5 px-3 rounded"
+                  onClick={handleClick}
+                >
+                  Search
+                </button>
                 <div>
                   <button onClick={handleCard}>
-                    <MdOutlineCancel />
+                    <MdOutlineCancel size={30} />
                   </button>
                 </div>
               </div>
               <div>
                 {user && (
                   <div
-                    className="flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded"
+                    className="cursor-pointer mt-3 flex items-center hover:bg-neutral-800 px-1 py-1 w-full rounded"
                     onClick={handleSelect}
                   >
                     <img

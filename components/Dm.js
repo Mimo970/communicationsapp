@@ -1,7 +1,7 @@
 import React from "react";
 const Dm = (props) => {
   return (
-    <div className="flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded">
+    <div className=" flex items-center hover:bg-neutral-700 px-1 py-1 w-full rounded">
       <img
         className="rounded-full w-11 h-11 object-center"
         src={props.img}
