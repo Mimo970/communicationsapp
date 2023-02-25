@@ -11,6 +11,7 @@ import {
   getDoc,
   serverTimestamp,
   doc,
+  writeBatch,
 } from "firebase/firestore";
 import React, { useContext, useState } from "react";
 import { MdOutlineCancel } from "react-icons/md";
@@ -50,6 +51,150 @@ const DMSNavbar = () => {
     // setUser(null);
     setUsername("");
   };
+
+  // const handleSelect = async () => {
+  //   //check whether the group(chats in firestore) exists, if not create
+  //   const combinedId =
+  //     currentUser.uid > user.uid
+  //       ? currentUser.uid + user.uid
+  //       : user.uid + currentUser.uid;
+  //   try {
+  //     const res = await getDoc(doc(db, "chats", combinedId));
+
+  //     if (!res.exists()) {
+  //       //create a chat in chats collection
+  //       await setDoc(doc(db, "chats", combinedId), { messages: [] });
+
+  //       //create user chats
+  //       const currentUserData = {
+  //         uid: currentUser.uid,
+  //         displayName: currentUser.displayName,
+  //         photoURL: currentUser.photoURL,
+  //         aboutMe: currentUser.aboutMe || null,
+  //         aboutMeColor: currentUser.aboutMeColor || null,
+  //       };
+  //       const userData = {
+  //         uid: user.uid,
+  //         displayName: user.displayName,
+  //         photoURL: user.photoURL,
+  //         aboutMe: user.aboutMe || null,
+  //         aboutMeColor: user.aboutMeColor || null,
+  //       };
+
+  //       const batch = writeBatch(db);
+  //       batch.set(doc(db, "userChats", currentUser.uid), {
+  //         [combinedId]: { userInfo: userData, date: serverTimestamp() },
+  //       });
+  //       batch.set(doc(db, "userChats", user.uid), {
+  //         [combinedId]: { userInfo: currentUserData, date: serverTimestamp() },
+  //       });
+  //       await batch.commit();
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+
+  //   setUser(null);
+  //   setUsername("");
+  // };
+  const handleSelect = async () => {
+    // Check whether the group (chats in Firestore) exists, if not create
+    const combinedId =
+      currentUser.uid > user.uid
+        ? currentUser.uid + user.uid
+        : user.uid + currentUser.uid;
+
+    try {
+      const res = await getDoc(doc(db, "chats", combinedId));
+
+      if (!res.exists()) {
+        // Create a chat in chats collection
+        await setDoc(doc(db, "chats", combinedId), { messages: [] });
+
+        // Add user info to userChats collection for current user
+        const currentUserChatsRef = doc(db, "userChats", currentUser.uid);
+        const currentUserChatsDoc = await getDoc(currentUserChatsRef);
+
+        if (currentUserChatsDoc.exists()) {
+          // If userChats document for current user already exists, update it
+          const batch = writeBatch(db);
+          batch.update(currentUserChatsRef, {
+            [combinedId + ".userInfo"]: {
+              uid: user.uid,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+              aboutMe: user.aboutMe || "",
+              aboutMeColor: user.aboutMeColor || "",
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+          await batch.commit();
+        } else {
+          // If userChats document for current user does not exist, create it
+          await setDoc(
+            currentUserChatsRef,
+            {
+              [combinedId]: {
+                userInfo: {
+                  uid: user.uid,
+                  displayName: user.displayName,
+                  photoURL: user.photoURL,
+                  aboutMe: user.aboutMe || "",
+                  aboutMeColor: user.aboutMeColor || "",
+                },
+                date: serverTimestamp(),
+              },
+            },
+            { merge: true }
+          );
+        }
+
+        // Add user info to userChats collection for selected user
+        const userChatsRef = doc(db, "userChats", user.uid);
+        const userChatsDoc = await getDoc(userChatsRef);
+
+        if (userChatsDoc.exists()) {
+          // If userChats document for selected user already exists, update it
+          const batch = writeBatch(db);
+          batch.update(userChatsRef, {
+            [combinedId + ".userInfo"]: {
+              uid: currentUser.uid,
+              displayName: currentUser.displayName,
+              photoURL: currentUser.photoURL,
+              aboutMe: currentUser.aboutMe || "",
+              aboutMeColor: currentUser.aboutMeColor || "",
+            },
+            [combinedId + ".date"]: serverTimestamp(),
+          });
+          await batch.commit();
+        } else {
+          // If userChats document for selected user does not exist, create it
+          await setDoc(
+            userChatsRef,
+            {
+              [combinedId]: {
+                userInfo: {
+                  uid: currentUser.uid,
+                  displayName: currentUser.displayName,
+                  photoURL: currentUser.photoURL,
+                  aboutMe: currentUser.aboutMe || "",
+                  aboutMeColor: currentUser.aboutMeColor || "",
+                },
+                date: serverTimestamp(),
+              },
+            },
+            { merge: true }
+          );
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    setUser(null);
+    setUsername("");
+  };
+
   const handleKey = (e) => {
     e.code === "Enter" && handleSearch();
   };
@@ -58,51 +203,6 @@ const DMSNavbar = () => {
     e.preventDefault();
     handleSearch();
   };
-
-  const handleSelect = async () => {
-    //check whether the group(chats in firestore) exists, if not create
-    const combinedId =
-      currentUser.uid > user.uid
-        ? currentUser.uid + user.uid
-        : user.uid + currentUser.uid;
-    try {
-      const res = await getDoc(doc(db, "chats", combinedId));
-
-      if (!res.exists()) {
-        //create a chat in chats collection
-        await setDoc(doc(db, "chats", combinedId), { messages: [] });
-
-        //create user chats
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          [combinedId + ".userInfo"]: {
-            uid: user.uid,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            aboutMe: user.aboutMe,
-            aboutMeColor: user.aboutMeColor,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
-
-        await updateDoc(doc(db, "userChats", user.uid), {
-          [combinedId + ".userInfo"]: {
-            uid: currentUser.uid,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-            aboutMe: currentUser.aboutMe,
-            aboutMeColor: currentUser.aboutMeColor,
-          },
-          [combinedId + ".date"]: serverTimestamp(),
-        });
-      }
-    } catch (err) {}
-
-    setUser(null);
-    setUsername("");
-    handleCard();
-  };
-
-  // console.log(user, username);
 
   return (
     <div className="flex justify-center border-b border-b-neutral-900 pb-2">
@@ -167,9 +267,112 @@ const DMSNavbar = () => {
 
 export default DMSNavbar;
 
-{
-  /* <div>
-                    <img className="w-14" src={user.photoURL} alt="" />
-                    <span>{user.displayName}</span>
-                  </div> */
-}
+// const handleSelect = async () => {
+//   //check whether the group(chats in firestore) exists, if not create
+//   const combinedId =
+//     currentUser.uid > user.uid
+//       ? currentUser.uid + user.uid
+//       : user.uid + currentUser.uid;
+//   try {
+//     const res = await getDoc(doc(db, "chats", combinedId));
+//     // const res = await getDoc(doc(db, "userChats", currentUser.uid));
+
+//     if (!res.exists()) {
+//       //create a chat in chats collection
+//       await setDoc(doc(db, "chats", combinedId), { messages: [] });
+
+//       //create user chats
+//       await updateDoc(doc(db, "userChats", currentUser.uid), {
+//         [combinedId + ".userInfo"]: {
+//           uid: user.uid,
+//           displayName: user.displayName,
+//           photoURL: user.photoURL,
+//           aboutMe: user.aboutMe,
+//           aboutMeColor: user.aboutMeColor,
+//         },
+//         [combinedId + ".date"]: serverTimestamp(),
+//       });
+
+//       await updateDoc(doc(db, "userChats", user.uid), {
+//         [combinedId + ".userInfo"]: {
+//           uid: currentUser.uid,
+//           displayName: currentUser.displayName,
+//           photoURL: currentUser.photoURL,
+//           aboutMe: currentUser.aboutMe,
+//           aboutMeColor: currentUser.aboutMeColor,
+//         },
+//         [combinedId + ".date"]: serverTimestamp(),
+//       });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   setUser(null);
+//   setUsername("");
+//   handleCard();
+// };
+// const handleSelect = async () => {
+//   const combinedId =
+//     currentUser.uid > user.uid
+//       ? currentUser.uid + user.uid
+//       : user.uid + currentUser.uid;
+
+//   try {
+//     const userChatsRef = doc(db, "chats", currentUser.uid);
+//     const userChatsSnapshot = await getDoc(userChatsRef);
+//     const userChatsData = userChatsSnapshot.data();
+//     const chatRef = doc(db, "chats", combinedId);
+//     const chatSnapshot = await getDoc(chatRef);
+
+//     if (chatRef) {
+//       // chat already exists, do nothing
+//       setUser(null);
+//       setUsername("");
+//       handleCard();
+//       return;
+//     }
+
+//     if (!chatSnapshot.exists()) {
+//       // create a new chat
+//       await setDoc(chatRef, { messages: [] });
+//     }
+
+//     // add the chat to currentUser's userChats
+//     await updateDoc(userChatsRef, {
+//       [combinedId]: {
+//         userInfo: {
+//           uid: user.uid,
+//           displayName: user.displayName,
+//           photoURL: user.photoURL,
+//           aboutMe: user.aboutMe,
+//           aboutMeColor: user.aboutMeColor,
+//         },
+//         date: serverTimestamp(),
+//       },
+//     });
+
+//     // add the chat to the other user's userChats
+//     const otherUserChatsRef = doc(db, "userChats", user.uid);
+//     await updateDoc(otherUserChatsRef, {
+//       [combinedId]: {
+//         userInfo: {
+//           uid: currentUser.uid,
+//           displayName: currentUser.displayName,
+//           photoURL: currentUser.photoURL,
+//           aboutMe: currentUser.aboutMe,
+//           aboutMeColor: currentUser.aboutMeColor,
+//         },
+//         date: serverTimestamp(),
+//       },
+//     });
+//   } catch (err) {
+//     console.error(err);
+//   }
+
+//   setUser(null);
+//   setUsername("");
+//   handleCard();
+// };
+
+// console.log(user, currentUser);
+// setUser(null);

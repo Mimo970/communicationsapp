@@ -18,6 +18,7 @@ import { ChatContext } from "contexts/ChatContext";
 
 const MyAccount = () => {
   const { currentUser } = useContext(AuthContext);
+
   const router = useRouter();
 
   const [color, setColor] = useState("#000000");
@@ -64,19 +65,9 @@ const MyAccount = () => {
 
     await updateDoc(doc(db, "users", currentUser.uid), {
       // date: Timestamp.now(),
-
+      photoURL: url,
       aboutMeColor: color,
       aboutMe: aboutMe,
-    });
-    const docRef = doc(db, "userChats", currentUser.uid);
-
-    await updateDoc(docRef, {
-      userInfo: {
-        aboutMeColor: color,
-        aboutMe: aboutMe,
-      },
-
-      // { merge: true }
     });
   };
 
@@ -85,7 +76,8 @@ const MyAccount = () => {
 
     router.push("/");
   };
-  // console.log(color);
+  console.log(Object.entries(data));
+
   return (
     <div className="pt-5 bg-zinc-700 h-screen ">
       <div className=" flex flex-col max-w-4xl mx-auto bg-zinc-800 p-4 rounded-lg">

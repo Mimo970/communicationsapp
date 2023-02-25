@@ -21,7 +21,7 @@ const ChatMessages = () => {
       unsub();
     };
   }, [data.chatId]);
-  console.log(data);
+  // console.log(data);
   // h-[45rem]
   return (
     <div className=" h-[45rem] overflow-y-scroll p-3">

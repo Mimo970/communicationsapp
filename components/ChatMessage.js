@@ -1,13 +1,31 @@
 import { AuthContext } from "contexts/AuthContext";
 import { ChatContext } from "contexts/ChatContext";
-import React, { useContext } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import React, { useContext, useEffect, useState } from "react";
 const ChatMessage = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-  // console.log(message);
-  let messageDate = new Date(message.date.seconds * 1000);
-  // console.log(messageDate);
+  const [aboutMe, setAboutMe] = useState("");
+
+  const findBio = async (data) => {
+    if (data.user.uid) {
+      const docRef = doc(db, "users", data.user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        // console.log("Document data:", docSnap.data());
+        setAboutMe(docSnap.data());
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    }
+  };
+  useEffect(() => {
+    findBio(data);
+  }, [data]);
+  // console.log(aboutMe);
   return (
     <div
       className={`flex items-start ${
@@ -18,7 +36,7 @@ const ChatMessage = ({ message }) => {
         src={
           message.senderId === currentUser.uid
             ? currentUser.photoURL
-            : data.user.photoURL
+            : aboutMe.photoURL
         }
         alt="Avatar"
         className="w-10 h-10 rounded-full mr-3"
