@@ -24,7 +24,7 @@ const ChatMessages = () => {
   // console.log(data);
   // h-[45rem]
   return (
-    <div className=" h-[45rem] overflow-y-scroll p-3">
+    <div className="h-[45rem] overflow-y-scroll p-3 ">
       {messages.map((m) => (
         <ChatMessage message={m} key={m.id} />
       ))}

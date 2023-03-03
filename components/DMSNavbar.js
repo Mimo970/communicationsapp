@@ -7,6 +7,9 @@ import {
   where,
   getDocs,
   updateDoc,
+  orderBy,
+  startAt,
+  endAt,
   setDoc,
   getDoc,
   serverTimestamp,
@@ -20,6 +23,8 @@ const DMSNavbar = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
+  const [usersFromQueryArray, setUsersFromQueryArray] = useState([]);
+  const [hovered, setHovered] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
 
@@ -27,82 +32,70 @@ const DMSNavbar = () => {
     setShowCard(!showCard);
   };
 
+  // const handleSearch = async () => {
+  //   const q = query(
+  //     collection(db, "users"),
+  //     orderBy("displayName"),
+  //     startAt(username.toLowerCase()),
+  //     endAt(username.toLowerCase() + "\uf8ff")
+  //   );
+
+  //   try {
+  //     const querySnapshot = await getDocs(q);
+  //     console.log(`Number of documents returned: ${querySnapshot.size}`);
+
+  //     querySnapshot.forEach((doc) => {
+  //       setUser(doc.data());
+  //       console.log(doc.id, " => ", doc.data());
+  //       console.log(user);
+  //     });
+  //     console.log(querySnapshot.empty);
+  //     console.log(user);
+  //   } catch (err) {
+  //     console.log(err);
+  //     setError(true);
+  //   }
+  //   // setUser(null);
+  //   setUsername("");
+  // };
+
   const handleSearch = async () => {
     const q = query(
       collection(db, "users"),
-      where("displayName", "==", username)
+      orderBy("displayName"),
+      startAt(username.toLowerCase()),
+      endAt(username.toLowerCase() + "\uf8ff")
     );
 
     try {
       const querySnapshot = await getDocs(q);
       console.log(`Number of documents returned: ${querySnapshot.size}`);
 
+      const users = [];
       querySnapshot.forEach((doc) => {
-        setUser(doc.data());
+        users.push(doc.data());
         console.log(doc.id, " => ", doc.data());
-        console.log(user);
       });
-      console.log(querySnapshot.empty);
-      console.log(user);
+      setUser(users);
     } catch (err) {
       console.log(err);
       setError(true);
     }
+
     // setUser(null);
     setUsername("");
   };
+  // user && console.log(user[0].uid);
+  user && console.log(user);
 
-  // const handleSelect = async () => {
-  //   //check whether the group(chats in firestore) exists, if not create
-  //   const combinedId =
-  //     currentUser.uid > user.uid
-  //       ? currentUser.uid + user.uid
-  //       : user.uid + currentUser.uid;
-  //   try {
-  //     const res = await getDoc(doc(db, "chats", combinedId));
-
-  //     if (!res.exists()) {
-  //       //create a chat in chats collection
-  //       await setDoc(doc(db, "chats", combinedId), { messages: [] });
-
-  //       //create user chats
-  //       const currentUserData = {
-  //         uid: currentUser.uid,
-  //         displayName: currentUser.displayName,
-  //         photoURL: currentUser.photoURL,
-  //         aboutMe: currentUser.aboutMe || null,
-  //         aboutMeColor: currentUser.aboutMeColor || null,
-  //       };
-  //       const userData = {
-  //         uid: user.uid,
-  //         displayName: user.displayName,
-  //         photoURL: user.photoURL,
-  //         aboutMe: user.aboutMe || null,
-  //         aboutMeColor: user.aboutMeColor || null,
-  //       };
-
-  //       const batch = writeBatch(db);
-  //       batch.set(doc(db, "userChats", currentUser.uid), {
-  //         [combinedId]: { userInfo: userData, date: serverTimestamp() },
-  //       });
-  //       batch.set(doc(db, "userChats", user.uid), {
-  //         [combinedId]: { userInfo: currentUserData, date: serverTimestamp() },
-  //       });
-  //       await batch.commit();
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-
-  //   setUser(null);
-  //   setUsername("");
-  // };
   const handleSelect = async () => {
     // Check whether the group (chats in Firestore) exists, if not create
     const combinedId =
-      currentUser.uid > user.uid
-        ? currentUser.uid + user.uid
-        : user.uid + currentUser.uid;
+      currentUser.uid > hovered.uid
+        ? currentUser.uid + hovered.uid
+        : hovered.uid + currentUser.uid;
+
+    // console.log(user.uid);
 
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
@@ -120,11 +113,11 @@ const DMSNavbar = () => {
           const batch = writeBatch(db);
           batch.update(currentUserChatsRef, {
             [combinedId + ".userInfo"]: {
-              uid: user.uid,
-              displayName: user.displayName,
-              photoURL: user.photoURL,
-              aboutMe: user.aboutMe || "",
-              aboutMeColor: user.aboutMeColor || "",
+              uid: hovered.uid,
+              displayName: hovered.displayName,
+              photoURL: hovered.photoURL,
+              aboutMe: hovered.aboutMe || "",
+              aboutMeColor: hovered.aboutMeColor || "",
             },
             [combinedId + ".date"]: serverTimestamp(),
           });
@@ -136,11 +129,11 @@ const DMSNavbar = () => {
             {
               [combinedId]: {
                 userInfo: {
-                  uid: user.uid,
-                  displayName: user.displayName,
-                  photoURL: user.photoURL,
-                  aboutMe: user.aboutMe || "",
-                  aboutMeColor: user.aboutMeColor || "",
+                  uid: hovered.uid,
+                  displayName: hovered.displayName,
+                  photoURL: hovered.photoURL,
+                  aboutMe: hovered.aboutMe || "",
+                  aboutMeColor: hovered.aboutMeColor || "",
                 },
                 date: serverTimestamp(),
               },
@@ -191,7 +184,7 @@ const DMSNavbar = () => {
       console.log(err);
     }
 
-    setUser(null);
+    // setUser(null);
     setUsername("");
   };
 
@@ -204,12 +197,14 @@ const DMSNavbar = () => {
     handleSearch();
   };
 
+  hovered && console.log(hovered.uid);
+
   return (
     <div className="flex justify-center border-b border-b-neutral-900 pb-2">
       <div className="relative ">
         <input
           onClick={handleCard}
-          type="search"
+          // type="search"
           className="cursor-pointer w-64 text-white placeholder-neutral-200  bg-neutral-900 rounded  p-1.5  focus:outline-none focus:shadow-outline"
           placeholder="Find or start a conversation "
         />
@@ -224,7 +219,7 @@ const DMSNavbar = () => {
                     type="search"
                     name=""
                     id=""
-                    className="bg-zinc-500 w-96 p-2 text-white"
+                    className="bg-zinc-500 w-96 p-2 text-white rounded"
                     placeholder="Find or start a conversation "
                   />
                 </div>
@@ -241,7 +236,25 @@ const DMSNavbar = () => {
                 </div>
               </div>
               <div>
-                {user && (
+                {user &&
+                  user.map((u, index) => (
+                    <div
+                      onMouseEnter={() => setHovered(u, index)}
+                      onMouseLeave={() => setHovered(null)}
+                      className="py-1"
+                      key={u.uid}
+                      onClick={handleSelect}
+                    >
+                      <Dm
+                        key={u.uid}
+                        uid={u.uid}
+                        displayName={u.displayName}
+                        photoURL={u.photoURL}
+                        handleCard={handleCard}
+                      />
+                    </div>
+                  ))}
+                {/* {user && (
                   <div
                     className="cursor-pointer mt-3 flex items-center hover:bg-neutral-800 px-1 py-1 w-full rounded"
                     onClick={handleSelect}
@@ -255,7 +268,7 @@ const DMSNavbar = () => {
                       {user.displayName}
                     </span>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>

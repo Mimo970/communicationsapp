@@ -7,8 +7,6 @@ import {
 import React, { useState } from "react";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { auth, storage, db } from "../../firebase";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";

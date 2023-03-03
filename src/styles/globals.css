@@ -4,9 +4,9 @@
   scrollbar-color: var(--secondary) var(--primary);
 }
 
-/* Chrome, Edge, and Safari */
+ 
 *::-webkit-scrollbar {
-  width: 15px;
+  width: 11px;
 }
 
 *::-webkit-scrollbar-track {
@@ -22,10 +22,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
+:root {
   --primary: #3a3a40;
   --secondary: #262626;
-} */
+}
 
 
 

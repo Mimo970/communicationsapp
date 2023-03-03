@@ -9,7 +9,7 @@ const Chat = () => {
   return (
     <div className="xxs:col-span-8 xs:col-span-8 sm:col-span-8 md:col-span-8 lg:col-span-5 primary-lighter ">
       {data.chatId === "null" ? (
-        <div className=" "> </div>
+        <div className=" flex flex-row justify-between h-screen "></div>
       ) : (
         <div className=" flex flex-col justify-between">
           <ChatMessages />

@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { auth, storage, db } from "../../firebase";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   ref,
   uploadBytesResumable,
@@ -89,7 +87,7 @@ const RegisterPage = () => {
               email,
               photoURL: downloadURL,
               aboutMe: "",
-              aboutMeColor: "",
+              aboutMeColor: "#99AAB5",
             });
             await setDoc(doc(db, "userChats", response.user.uid), {});
           });
@@ -99,16 +97,16 @@ const RegisterPage = () => {
     } catch (error) {
       console.log(error);
       setError(true);
-      toast.error("🦄 Wow so easy!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      // toast.error("🦄 Wow so easy!", {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      // });
     }
   };
 

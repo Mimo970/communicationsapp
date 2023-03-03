@@ -53,9 +53,9 @@ const ChatMessage = ({ message }) => {
           </p>
           {/* <p className=" text-zinc-400">11:32 PM</p> */}
         </div>
-        <main className="flex flex-col bg-neutral-800 w-1/2 rounded p-2">
+        <main className="flex flex-col bg-neutral-800 w-3/4 rounded p-2">
           <p className="text-lg font-medium text-neutral-100"></p>
-          <p className="text-md text-white  w-1/2">{message.text}</p>
+          <p className="text-md text-white  w-full">{message.text}</p>
           {message.img && <img src={message.img} alt="" />}
         </main>
       </div>
