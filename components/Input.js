@@ -79,7 +79,7 @@ const Input = () => {
 
   return (
     <ErrorBoundary>
-      <div className="flex items-center bg-zinc-900 m-3 p-2 rounded-md">
+      <div className="flex items-center bg-zinc-900 m-2 p-2 rounded-md">
         <input
           type="text"
           className="w-full bg-neutral-900 rounded text-white p-1.5 focus:outline-none focus:shadow-outline"
@@ -89,7 +89,7 @@ const Input = () => {
           onKeyDown={handleKey}
         />
         <div className="flex items-center">
-          <BsPaperclip className="icons cursor-pointer" />
+          {/* <BsPaperclip className="icons cursor-pointer" /> */}
           <input
             type="file"
             style={{ display: "none" }}

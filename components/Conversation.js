@@ -16,6 +16,7 @@ const Conversation = () => {
 
       <div className={`  grid grid-cols-8 `}>
         <Chat />
+        {/* {screenSize.width > 1023 || (screenSize.width === 0 && <Bio />)} */}
         <Bio />
       </div>
     </div>

@@ -5,6 +5,7 @@ import { ChatContext } from "contexts/ChatContext";
 
 const Chat = () => {
   const { data } = useContext(ChatContext);
+  // data.INITIAL_STATE && console.log(data.INITIAL_STATE.chatId);
 
   return (
     <div className="xxs:col-span-8 xs:col-span-8 sm:col-span-8 md:col-span-8 lg:col-span-5 primary-lighter ">

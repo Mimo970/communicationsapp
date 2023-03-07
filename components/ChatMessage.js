@@ -10,7 +10,7 @@ const ChatMessage = ({ message }) => {
   const [aboutMe, setAboutMe] = useState("");
 
   const findBio = async (data) => {
-    if (data.user.uid) {
+    if (data.user?.uid) {
       const docRef = doc(db, "users", data.user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {

@@ -69,12 +69,12 @@ const DMSNavbar = () => {
 
     try {
       const querySnapshot = await getDocs(q);
-      console.log(`Number of documents returned: ${querySnapshot.size}`);
+      // console.log(`Number of documents returned: ${querySnapshot.size}`);
 
       const users = [];
       querySnapshot.forEach((doc) => {
         users.push(doc.data());
-        console.log(doc.id, " => ", doc.data());
+        // console.log(doc.id, " => ", doc.data());
       });
       setUser(users);
     } catch (err) {
@@ -86,7 +86,7 @@ const DMSNavbar = () => {
     setUsername("");
   };
   // user && console.log(user[0].uid);
-  user && console.log(user);
+  // user && console.log(user);
 
   const handleSelect = async () => {
     // Check whether the group (chats in Firestore) exists, if not create
@@ -99,13 +99,49 @@ const DMSNavbar = () => {
 
     try {
       const res = await getDoc(doc(db, "chats", combinedId));
+      const selectedUserChatsRef = doc(db, "userChats", currentUser.uid);
+      const selectedUserChatsDoc = await getDoc(selectedUserChatsRef);
+
+      const chatInfo = selectedUserChatsDoc.data()[hovered.uid];
+      // console.log(chatInfo);
+
+      const currentUserChatsRef = doc(db, "userChats", currentUser.uid);
+
+      // if (chatInfo) {
+      //   // Access the chat information for the selected user
+      //   const selectedUserChatDate = chatInfo.date;
+      //   const selectedUserChatUserInfo = chatInfo.userInfo;
+      // } else {
+      //   // Chat information for selected user not found
+      //   console.log("Chat information for selected user not found");
+      // }
+
+      if (!chatInfo) {
+        await setDoc(
+          currentUserChatsRef,
+          {
+            [combinedId]: {
+              userInfo: {
+                uid: hovered.uid,
+                displayName: hovered.displayName,
+                photoURL: hovered.photoURL,
+                aboutMe: hovered.aboutMe || "",
+                aboutMeColor: hovered.aboutMeColor || "",
+                note: hovered.note || "",
+              },
+              date: serverTimestamp(),
+            },
+          },
+          { merge: true }
+        );
+      }
 
       if (!res.exists()) {
         // Create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
         // Add user info to userChats collection for current user
-        const currentUserChatsRef = doc(db, "userChats", currentUser.uid);
+
         const currentUserChatsDoc = await getDoc(currentUserChatsRef);
 
         if (currentUserChatsDoc.exists()) {
@@ -118,6 +154,7 @@ const DMSNavbar = () => {
               photoURL: hovered.photoURL,
               aboutMe: hovered.aboutMe || "",
               aboutMeColor: hovered.aboutMeColor || "",
+              note: hovered.note || "",
             },
             [combinedId + ".date"]: serverTimestamp(),
           });
@@ -134,6 +171,7 @@ const DMSNavbar = () => {
                   photoURL: hovered.photoURL,
                   aboutMe: hovered.aboutMe || "",
                   aboutMeColor: hovered.aboutMeColor || "",
+                  note: hovered.note || "",
                 },
                 date: serverTimestamp(),
               },
@@ -143,7 +181,7 @@ const DMSNavbar = () => {
         }
 
         // Add user info to userChats collection for selected user
-        const userChatsRef = doc(db, "userChats", user.uid);
+        const userChatsRef = doc(db, "userChats", hovered.uid);
         const userChatsDoc = await getDoc(userChatsRef);
 
         if (userChatsDoc.exists()) {
@@ -156,6 +194,7 @@ const DMSNavbar = () => {
               photoURL: currentUser.photoURL,
               aboutMe: currentUser.aboutMe || "",
               aboutMeColor: currentUser.aboutMeColor || "",
+              note: currentUser.note || "",
             },
             [combinedId + ".date"]: serverTimestamp(),
           });
@@ -172,6 +211,7 @@ const DMSNavbar = () => {
                   photoURL: currentUser.photoURL,
                   aboutMe: currentUser.aboutMe || "",
                   aboutMeColor: currentUser.aboutMeColor || "",
+                  note: currentUser.note || "",
                 },
                 date: serverTimestamp(),
               },
@@ -197,7 +237,7 @@ const DMSNavbar = () => {
     handleSearch();
   };
 
-  hovered && console.log(hovered.uid);
+  // hovered && console.log(hovered.uid);
 
   return (
     <div className="flex justify-center border-b border-b-neutral-900 pb-2">
@@ -239,7 +279,7 @@ const DMSNavbar = () => {
                 {user &&
                   user.map((u, index) => (
                     <div
-                      onMouseEnter={() => setHovered(u, index)}
+                      onMouseEnter={() => setHovered(u)}
                       onMouseLeave={() => setHovered(null)}
                       className="py-1"
                       key={u.uid}
